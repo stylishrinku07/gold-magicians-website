@@ -40,7 +40,7 @@
         <button class="btn" id="loginBtn">Login</button>
         <a href="index.html" style="color:var(--muted);padding:10px 0 0 4px;text-decoration:none;">← Back to website</a>
       </div>
-      <p class="muted" style="margin-top:8px;font-size:13px;">Demo credentials: admin / gold123</p>
+      <p class="muted" style="margin-top:8px;font-size:13px;">Demo credentials: admin / admin</p>
     </section>
 
     <section id="panelCard" class="card hidden" style="margin-top:16px;">
@@ -112,7 +112,7 @@
     loginBtn.addEventListener('click', () => {
       const u = username.value.trim();
       const p = password.value.trim();
-      if (u === 'admin' && p === 'gold123') {
+      if (u === 'admin' && p === 'admin') {
         sessionStorage.setItem('gm_admin_auth', '1');
         loginCard.classList.add('hidden');
         panelCard.classList.remove('hidden');

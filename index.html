@@ -39,7 +39,6 @@
     .logo { font-weight: 800; }
     .logo span { color: var(--gold); }
     .nav-links { display: flex; gap: 16px; font-size: 14px; color: var(--muted); }
-
     .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 28px; padding: 44px 0 20px; }
     .badge {
       display: inline-flex; align-items: center; gap: 8px;
@@ -55,30 +54,24 @@
     }
     .btn-primary { background: linear-gradient(120deg, var(--gold), #ffb347); color: #312500; }
     .btn-soft { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.18); }
-
     .hero-card, .section { background: var(--panel); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; }
     .hero-card { padding: 16px; }
     .sir-photo {
       width: 100%; max-width: 370px; display: block; margin: 0 auto 12px;
       border-radius: 14px; border: 1px solid rgba(255,255,255,.15); object-fit: cover;
     }
-
     .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 12px; }
     .section { margin-top: 24px; padding: 18px; }
     .section h2 { margin-bottom: 10px; }
     .item { background: var(--panel-2); border: 1px solid rgba(255,255,255,.09); border-radius: 12px; padding: 14px; }
     .item a { color: var(--mint); word-break: break-word; }
     .muted { color: var(--muted); }
-
     .batch-card .status { padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
     .open { background: rgba(88,214,141,.18); color: var(--ok); }
     .closed { background: rgba(255,111,127,.16); color: var(--danger); }
-
     footer { margin: 36px 0 22px; text-align: center; color: var(--muted); font-size: 14px; }
-
     @media (max-width: 920px) {
-      .hero { grid-template-columns: 1fr; }
-      .grid-3 { grid-template-columns: 1fr; }
+      .hero, .grid-3 { grid-template-columns: 1fr; }
       .nav-links { display: none; }
     }
   </style>
@@ -106,7 +99,6 @@
         <div class="cta-row">
           <a href="#join" class="btn btn-primary"><i class="fa-solid fa-rocket"></i> Start VIP Steps</a>
           <a href="https://t.me/goldmagicans" target="_blank" rel="noopener" class="btn btn-soft"><i class="fa-brands fa-telegram"></i> Join Telegram</a>
-          <a href="admin.html" class="btn btn-soft"><i class="fa-solid fa-lock"></i> Admin Login</a>
         </div>
       </div>
       <aside class="hero-card">
@@ -124,8 +116,8 @@
       <h3 style="margin-top:14px;">Our Achievements</h3>
       <div class="grid-3" style="margin-top:10px;">
         <div class="item"><strong>500+ Funded Traders</strong><br><span class="muted">Trained and verified</span></div>
-        <div class="item"><strong>7000+ Active Members</strong><br><span class="muted">Across platforms</span></div>
-        <div class="item"><strong>Daily XAUUSD Analysis</strong><br><span class="muted">Trade breakdowns + live sessions</span></div>
+        <div class="item"><strong>7000+ Active Community Members</strong><br><span class="muted">Across platforms</span></div>
+        <div class="item"><strong>Daily XAUUSD Analysis</strong><br><span class="muted">Trade breakdowns + live YouTube sessions</span></div>
       </div>
     </section>
 
@@ -135,7 +127,7 @@
       <div class="grid-3" style="margin-top:12px;">
         <div class="item"><strong>200+ Funded Traders</strong><br><span class="muted">Join a proven community of successful traders.</span></div>
         <div class="item"><strong>Complete Transparency</strong><br><span class="muted">Real trades, real results, real-time updates.</span></div>
-        <div class="item"><strong>Top Trader Recognition</strong><br><span class="muted">Recognized among India's top traders and mentors.</span></div>
+        <div class="item"><strong>Recognized Among India's Top Traders</strong><br><span class="muted">Industry-leading education and mentorship.</span></div>
         <div class="item"><strong>Smart Money Concepts That Work</strong><br><span class="muted">Advanced strategies with proven track records.</span></div>
       </div>
     </section>
@@ -198,6 +190,7 @@
       { id: 'b2', title: 'Elite Execution Batch', price: 9999, seats: 60, status: 'open', desc: 'Advanced entries and risk frameworks.' },
       { id: 'b3', title: 'Mindset & Psychology Sprint', price: 2999, seats: 80, status: 'closed', desc: 'Discipline system for consistency.' }
     ];
+
     if (!localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultBatches));
 
     let selectedBatchId = null;
@@ -218,7 +211,7 @@
           </div>
           <div class="muted" style="margin-top:6px;">${batch.desc}</div>
           <div style="margin-top:8px;font-weight:700;">₹${Number(batch.price).toLocaleString('en-IN')} • ${batch.seats} seats</div>
-          <div style="margin-top:8px;"><input ${idx===0 ? 'checked' : ''} type="radio" name="batch" value="${batch.id}"> Select batch</div>
+          <div style="margin-top:8px;"><input ${idx === 0 ? 'checked' : ''} type="radio" name="batch" value="${batch.id}"> Select batch</div>
         `;
         list.appendChild(div);
       });
