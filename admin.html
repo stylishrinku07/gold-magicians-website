@@ -3,167 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gold Magicians Admin Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet" />
+  <title>Redirecting to Admin Panel</title>
+  <meta http-equiv="refresh" content="0; url=/adminpanel/" />
+  <script>
+    window.location.replace('/adminpanel/');
+  </script>
   <style>
-    :root {
-      --bg:#140f04; --panel:#1e1606; --panel2:#2a1e09; --text:#fff5d8; --muted:#d5c79f; --gold:#f9d64a;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,sans-serif;background:radial-gradient(circle at 20% 0%,#5f4308,var(--bg) 42%);color:var(--text)}
-    .wrap{width:min(1000px,94%);margin:34px auto}
-    .card{background:linear-gradient(180deg, rgba(249,214,74,.08), var(--panel));border:1px solid rgba(249,214,74,.28);border-radius:14px;padding:18px}
-    h1,h2{margin-bottom:10px}
-    .muted{color:var(--muted)}
-    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(249,214,74,.35);background:#241a08;color:var(--text)}
-    .grid{display:grid;grid-template-columns:repeat(2,minmax(180px,1fr));gap:10px}
-    .actions{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
-    button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
-    .btn{background:linear-gradient(120deg,var(--gold),#ffb347);color:#2e2200}
-    .btn-soft{background:rgba(249,214,74,.12);color:var(--text);border:1px solid rgba(249,214,74,.3)}
-    table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
-    th,td{border-bottom:1px solid rgba(249,214,74,.22);padding:9px;text-align:left;vertical-align:top}
-    .hidden{display:none}
-    @media(max-width:780px){.grid{grid-template-columns:1fr}}
+    body { font-family: Arial, sans-serif; background:#120d03; color:#fff6de; display:grid; place-items:center; height:100vh; margin:0; }
+    a { color:#f9d64a; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section id="loginCard" class="card">
-      <h1>Gold Magicians Admin Login</h1>
-      <p class="muted">Separate access panel. Not visible inside main website UI.</p>
-      <div class="grid" style="margin-top:12px;">
-        <label>Username<input id="username" placeholder="admin" /></label>
-        <label>Password<input id="password" type="password" placeholder="••••••" /></label>
-      </div>
-      <div class="actions">
-        <button class="btn" id="loginBtn">Login</button>
-        <a href="index.html" style="color:var(--muted);padding:10px 0 0 4px;text-decoration:none;">← Back to website</a>
-      </div>
-      <p class="muted" style="margin-top:8px;font-size:13px;">Demo credentials: admin / admin</p>
-    </section>
-
-    <section id="panelCard" class="card hidden" style="margin-top:16px;">
-      <h2>Advanced Batch Management</h2>
-      <p class="muted">Edit price details, batch details, and open/close status.</p>
-
-      <div class="grid" style="margin-top:12px;">
-        <label>Batch ID (for edit)<input id="batchId" placeholder="leave empty for new batch" /></label>
-        <label>Title<input id="title" placeholder="Gold Mastery Batch" /></label>
-        <label>Price INR<input id="price" type="number" placeholder="9999" /></label>
-        <label>Seats<input id="seats" type="number" placeholder="50" /></label>
-        <label>Status
-          <select id="status"><option value="open">Open</option><option value="closed">Closed</option></select>
-        </label>
-        <label>Description<textarea id="desc" rows="2" placeholder="Batch details"></textarea></label>
-      </div>
-
-      <div class="actions">
-        <button class="btn" id="saveBtn">Save Batch</button>
-        <button class="btn-soft" id="resetBtn">Reset Default Batches</button>
-        <button class="btn-soft" id="logoutBtn">Logout</button>
-      </div>
-
-      <table>
-        <thead><tr><th>ID</th><th>Title</th><th>Price</th><th>Seats</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </section>
-  </div>
-
-  <script>
-    const STORAGE_KEY = 'goldmagicians_batches_v1';
-    const defaultBatches = [
-      { id: 'b1', title: 'VIP Foundation Batch', price: 4999, seats: 120, status: 'open', desc: 'Beginner to intermediate roadmap.' },
-      { id: 'b2', title: 'Elite Execution Batch', price: 9999, seats: 60, status: 'open', desc: 'Advanced entries and risk frameworks.' },
-      { id: 'b3', title: 'Mindset & Psychology Sprint', price: 2999, seats: 80, status: 'closed', desc: 'Discipline system for consistency.' }
-    ];
-
-    const getBatches = () => JSON.parse(localStorage.getItem(STORAGE_KEY) || JSON.stringify(defaultBatches));
-    const setBatches = (v) => localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
-
-    const loginCard = document.getElementById('loginCard');
-    const panelCard = document.getElementById('panelCard');
-
-    function renderTable() {
-      const rows = getBatches();
-      const tbody = document.getElementById('tbody');
-      tbody.innerHTML = '';
-      rows.forEach((b) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${b.id}</td><td>${b.title}<br><span class="muted">${b.desc}</span></td><td>₹${Number(b.price).toLocaleString('en-IN')}</td><td>${b.seats}</td><td>${b.status}</td><td><button data-id="${b.id}" class="editBtn">Edit</button></td>`;
-        tbody.appendChild(tr);
-      });
-      document.querySelectorAll('.editBtn').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const row = getBatches().find((x) => x.id === btn.dataset.id);
-          if (!row) return;
-          batchId.value = row.id;
-          title.value = row.title;
-          price.value = row.price;
-          seats.value = row.seats;
-          status.value = row.status;
-          desc.value = row.desc;
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-      });
-    }
-
-    loginBtn.addEventListener('click', () => {
-      const u = username.value.trim();
-      const p = password.value.trim();
-      if (u === 'admin' && p === 'admin') {
-        sessionStorage.setItem('gm_admin_auth', '1');
-        loginCard.classList.add('hidden');
-        panelCard.classList.remove('hidden');
-        renderTable();
-      } else {
-        alert('Invalid credentials.');
-      }
-    });
-
-    saveBtn.addEventListener('click', () => {
-      const id = batchId.value.trim();
-      const payload = {
-        id: id || `b_${Date.now()}`,
-        title: title.value.trim(),
-        price: Number(price.value),
-        seats: Number(seats.value),
-        status: status.value,
-        desc: desc.value.trim()
-      };
-
-      if (!payload.title || !payload.price || !payload.seats || !payload.desc) {
-        alert('Please fill all batch fields.');
-        return;
-      }
-
-      const rows = getBatches();
-      const index = rows.findIndex((r) => r.id === payload.id);
-      if (index >= 0) rows[index] = payload;
-      else rows.unshift(payload);
-      setBatches(rows);
-      renderTable();
-      alert('Batch saved.');
-    });
-
-    resetBtn.addEventListener('click', () => {
-      setBatches(defaultBatches);
-      renderTable();
-      alert('Reset done.');
-    });
-
-    logoutBtn.addEventListener('click', () => {
-      sessionStorage.removeItem('gm_admin_auth');
-      panelCard.classList.add('hidden');
-      loginCard.classList.remove('hidden');
-    });
-
-    if (sessionStorage.getItem('gm_admin_auth') === '1') {
-      loginCard.classList.add('hidden');
-      panelCard.classList.remove('hidden');
-      renderTable();
-    }
-  </script>
+  <p>Redirecting to <a href="/adminpanel/">/adminpanel/</a> ...</p>
 </body>
 </html>
