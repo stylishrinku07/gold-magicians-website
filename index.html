@@ -167,7 +167,8 @@
       <div class="cta-row">
         <button class="btn btn-primary" id="payNowBtn"><i class="fa-solid fa-credit-card"></i> Pay Selected Batch</button>
       </div>
-      <p class="muted" style="margin-top:8px; font-size:13px;">Razorpay demo is client-side. Replace key and add backend order flow for production.</p>
+      <p id="paymentStatus" class="muted" style="margin-top:8px; font-size:13px;"></p>
+      <p class="muted" style="margin-top:8px; font-size:13px;">Razorpay is enabled. Add your live key and backend order verification for production-grade security.</p>
     </section>
 
     <section class="section" id="social">
@@ -221,23 +222,61 @@
       });
     }
 
+    const RAZORPAY_KEY = 'rzp_test_ReplaceWithYourKey'; // replace with your live/test key
+    const paymentStatus = document.getElementById('paymentStatus');
+
+    function setPaymentStatus(message, ok = false) {
+      if (!paymentStatus) return;
+      paymentStatus.textContent = message;
+      paymentStatus.style.color = ok ? '#58d68d' : '#ffd369';
+    }
+
     document.getElementById('payNowBtn').addEventListener('click', () => {
       const batch = batches().find((b) => b.id === selectedBatchId);
       if (!batch) return alert('Please select a batch.');
       if (batch.status !== 'open') return alert('This batch is closed.');
+      if (!RAZORPAY_KEY || !RAZORPAY_KEY.startsWith('rzp_')) {
+        alert('Razorpay key is missing. Set RAZORPAY_KEY in index.html');
+        return;
+      }
+
+      if (!window.Razorpay) {
+        alert('Razorpay failed to load. Check internet and ad-blockers.');
+        return;
+      }
 
       const options = {
-        key: 'rzp_test_ReplaceWithYourKey',
+        key: RAZORPAY_KEY,
         amount: Number(batch.price) * 100,
         currency: 'INR',
         name: 'Gold Magicians',
         description: `${batch.title} Enrollment`,
-        handler: (response) => alert(`Payment successful: ${response.razorpay_payment_id}`),
-        theme: { color: "#d4a017" }
+        image: 'https://dummyimage.com/120x120/1a1305/f9d64a&text=GM',
+        prefill: {
+          name: 'Gold Magicians Student',
+          email: 'student@example.com',
+          contact: '9999999999'
+        },
+        notes: {
+          batch_id: batch.id,
+          batch_title: batch.title
+        },
+        handler: (response) => {
+          setPaymentStatus(`Payment successful. Payment ID: ${response.razorpay_payment_id}`, true);
+          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+        },
+        modal: {
+          ondismiss: () => setPaymentStatus('Payment popup closed before completion.')
+        },
+        theme: { color: '#d4a017' }
       };
 
-      if (window.Razorpay) new Razorpay(options).open();
-      else alert('Razorpay failed to load.');
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.on('payment.failed', (response) => {
+        const reason = response?.error?.description || 'Unknown reason';
+        setPaymentStatus(`Payment failed: ${reason}`);
+      });
+      razorpayInstance.open();
     });
 
     renderBatches();
